@@ -90,3 +90,21 @@ After deploying and running, we can connect to the server container and validate
 docker exec -it dataflow-server bash
 $ cat /tmp/rabbit_sink 
 ```
+
+Of course you can do everything from the dataflow Shell. Connect to the container and run (replace with your version):
+
+```
+wget https://repo.spring.io/snapshot/org/springframework/cloud/spring-cloud-dataflow-shell/2.0.0.BUILD-SNAPSHOT/spring-cloud-dataflow-shell-2.0.0.BUILD-SNAPSHOT.jar
+```
+
+We need to config the server:
+
+```
+server-unknown:>dataflow config server http://localhost:9393
+Shell mode: classic, Server mode: classic
+dataflow:>stream create --name "test" --definition "rabbit --queues=hello_queue --password=guest --host=rabbitmq --username=guest | toUpperCase: transform --expression='new String(payload).toUpperCase()' | file --name=rabbit_sink --directory=/tmp/"
+Created new stream 'test'
+dataflow:>stream list
+```
+
+Now you should be able to run all commands from the Shell.
